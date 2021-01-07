@@ -108,13 +108,13 @@ class MirrorListener(listeners.MirrorListeners):
 
     def onUploadComplete(self, link: str):
         with download_dict_lock:
-            msg = f'<b>Filename:</b> <code>{download_dict[self.uid].name()}</code>\n\n<b>Size:</b> <i>{download_dict[self.uid].size()}</i>\n\n<b>Gdrive:</b> {link}'            
+            msg = f'<b>Filename:</b> <code>{download_dict[self.uid].name()}</code> <i>({download_dict[self.uid].size()})</i>\n\n<b>Google Drive Link:</b> https://drive.google.com/uc?id={link}&export=download'            
             LOGGER.info(f'Done Uploading {download_dict[self.uid].name()}')
             if INDEX_URL is not None:
-                share_url = requests.utils.requote_uri(f'{INDEX_URL}/{download_dict[self.uid].name()}')
+                share_url = requests.utils.requote_uri(f'{INDEX_URL}/api/v1/drive/file/{download_dict[self.uid].name()}?id={link}')
                 if os.path.isdir(f'{DOWNLOAD_DIR}/{self.uid}/{download_dict[self.uid].name()}'):
                     share_url += '/'
-                msg += f'\n\n<b>Index:</b> {share_url}'
+                msg += f'\n\n<b>Direct Link :</b> {share_url}'
             if self.tag is not None:
                 msg += f'\ncc: @{self.tag}'
             try:
